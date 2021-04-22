@@ -1,5 +1,6 @@
 """ Replace background with the official of the company.
 """
+# for test : PT1512993
 
 import sys
 import clr
@@ -7,12 +8,12 @@ import System
 from System import Console
 from System.IO.Path import Combine
 import System.Runtime.InteropServices as SRI
-import delete
 
 clr.AddReference("System")
 clr.AddReference("System.IO")
 clr.AddReference("Interop.SolidEdge")
 clr.AddReference("System.Runtime.InteropServices")
+from SolidEdgeFileProperties import Properties
 
 __project__ = "ScaleDraftRemover"
 __author__ = "recs"
@@ -30,8 +31,21 @@ def raw_input(message):
     return Console.ReadLine()
 
 
-def username():
-    return System.Environment.UserName
+
+def echelle(doc):
+    """
+    replace echelle by "-".
+    """
+    # check if the draft is a draft.
+    if doc.Name.lower().endswith(".dft"):
+        print("Document name: %s" % doc.Name)
+        properties = doc.Properties
+        scale = properties('Custom').Item('ECHELLE').value
+        print("Current scale: %s" %scale)
+        properties('Custom').Item('ECHELLE').value = "-"
+    else:
+        print("document not a draft.")
+
 
 
 def main():
@@ -44,13 +58,13 @@ def main():
 
         if response.lower() in ["y", "yes"]:
             doc = application.ActiveDocument
-            delete.background(doc)
+            echelle(doc)
 
         elif response.lower() in ["*"]:
             # loop through all the drafts
             documents = application.Documents
             for doc in documents:
-                delete.background(doc)
+                echelle(doc)
         else:
             pass
 
