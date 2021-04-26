@@ -1,4 +1,4 @@
-""" Replace background with the official of the company.
+""" Remove the scale for "-".
 """
 # for test : PT1512993
 
@@ -6,7 +6,6 @@ import sys
 import clr
 import System
 from System import Console
-from System.IO.Path import Combine
 import System.Runtime.InteropServices as SRI
 
 clr.AddReference("System")
@@ -31,7 +30,6 @@ def raw_input(message):
     return Console.ReadLine()
 
 
-
 def echelle(doc):
     """
     replace echelle by "-".
@@ -40,12 +38,13 @@ def echelle(doc):
     if doc.Name.lower().endswith(".dft"):
         print("Document name: %s" % doc.Name)
         properties = doc.Properties
-        scale = properties('Custom').Item('ECHELLE').value
-        print("Current scale: %s" %scale)
-        properties('Custom').Item('ECHELLE').value = "-"
+        scale = properties("Custom").Item("ECHELLE").value
+        properties("Custom").Item("ECHELLE").value = "-"
+        print("[SCALE CHANGED]: [%s]\t->\t[-]" % scale )
     else:
         print("document not a draft.")
-
+    # Update the draft with the properties 
+    doc.UpdatePropertyTextDisplay()
 
 
 def main():
@@ -54,7 +53,8 @@ def main():
         # Connection to the application, only one session should be opened here.
         application = SRI.Marshal.GetActiveObject("SolidEdge.Application")
         response = raw_input(
-            """Would you like to delete the scale indication, (Press y/[Y] to proceed.):\n"(Option: Press '*' for processing documents in batch)""")
+            """Would you like to delete the scale indication, (Press y/[Y] to proceed.):\n"(Option: Press '*' for processing documents in batch)"""
+        )
 
         if response.lower() in ["y", "yes"]:
             doc = application.ActiveDocument
@@ -73,6 +73,8 @@ def main():
 
 
 if __name__ == "__main__":
-    print("%s\n--author: %s --version: %s --last-update : %s \n" %
-          (__project__, __author__, __version__, __update__))
+    print(
+        "%s\n--author: %s --version: %s --last-update : %s \n"
+        % (__project__, __author__, __version__, __update__)
+    )
     main()
