@@ -39,8 +39,11 @@ def echelle(doc):
         print("Document name: %s" % doc.Name)
         properties = doc.Properties
         scale = properties("Custom").Item("ECHELLE").value
-        properties("Custom").Item("ECHELLE").value = "-"
-        print("[SCALE CHANGED]: [%s]\t->\t[-]" % scale )
+        if (scale != "-"):
+            properties("Custom").Item("ECHELLE").value = "-"
+            print("[SCALE CHANGED]: [%s]\t->\t[-]" % scale )
+        else:
+            print("change not necessary.")
     else:
         print("document not a draft.")
     # Update the draft with the properties 
